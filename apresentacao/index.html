@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Painel SIR — apresentação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0B1220;
+      --panel: #121A2B;
+      --panel2: #182236;
+      --line: rgba(255,255,255,0.10);
+      --text: #E8EEF6;
+      --muted: #A8B6CC;
+      --teal: #2EC4B6;
+      --inf: #E85D4C;
+      --rec: #5B8DEF;
+      --warn: #E9C46A;
+      --gap: 1.05rem;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      font-size: clamp(20px, 1.5vw + 0.65vh, 32px);
+    }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "IBM Plex Sans", sans-serif;
+      overflow: hidden;
+    }
+    body {
+      background: radial-gradient(1200px 560px at 0% 0%, #132033 0%, var(--bg) 52%);
+    }
+
+    .deck { height: 100%; position: relative; }
+    .slide {
+      display: none;
+      height: 100%;
+      padding: clamp(0.7rem, 1.6vh, 1.25rem) clamp(1.2rem, 2.6vw, 2rem) 5.1rem;
+      flex-direction: column;
+      gap: var(--gap);
+    }
+    .slide.on { display: flex; }
+
+    .kicker {
+      font-size: 0.95rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--teal);
+    }
+    h1, h2 {
+      font-family: "IBM Plex Serif", serif;
+      font-weight: 600; letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+    h2 { font-size: clamp(1.7rem, 3.15vw, 2.5rem); }
+    .lede { color: var(--muted); font-size: clamp(1.2rem, 1.85vw, 1.5rem); line-height: 1.38; max-width: 58rem; }
+    .hint { color: var(--muted); font-size: 1.05rem; }
+
+    .head { display: flex; flex-direction: column; gap: 0.28rem; flex: 0 0 auto; }
+    .fill { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: var(--gap); }
+
+    .grid2, .grid3, .split, .split-rev {
+      display: grid;
+      gap: var(--gap);
+      align-items: stretch;
+      align-content: start;
+      flex: 0 1 auto;
+    }
+    .grid2 { grid-template-columns: 1fr 1fr; }
+    .grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+    .split { grid-template-columns: 0.92fr 1.08fr; }
+    .split-rev { grid-template-columns: 1.15fr 0.85fr; }
+    @media (max-width: 980px) {
+      .grid2, .grid3, .split, .split-rev { grid-template-columns: 1fr; }
+      .grid4 { grid-template-columns: 1fr 1fr; }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.95rem 1.1rem;
+      display: flex; flex-direction: column; gap: 0.45rem;
+      min-height: 0;
+    }
+    .grid2 > .card, .grid3 > .card, .split > .card, .split-rev > .card {
+      height: 100%;
+    }
+    .card h3 {
+      font-family: "IBM Plex Serif", serif;
+      font-size: 1.32rem; font-weight: 600;
+    }
+    .card p, .card li { color: var(--muted); font-size: 1.2rem; line-height: 1.38; }
+    .card ul { padding-left: 1.15rem; display: flex; flex-direction: column; gap: 0.32rem; }
+    .lbl {
+      font-size: 0.92rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .val {
+      font-family: "IBM Plex Serif", serif;
+      font-size: clamp(1.85rem, 2.8vw, 2.45rem); font-weight: 600; line-height: 1.1;
+    }
+    .eq {
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.75rem 0.95rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: clamp(1.18rem, 1.7vw, 1.5rem);
+      line-height: 1.55;
+      letter-spacing: -0.015em;
+    }
+    .eq b { color: var(--teal); font-weight: 500; }
+
+    .shot {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--panel);
+      min-height: 0;
+      flex: 1;
+      position: relative;
+    }
+    .shot img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: 18% 8%;
+      display: block;
+    }
+    .shot.mid img { object-position: 22% 42%; }
+    .shot.help img { object-position: 28% 18%; }
+    .shot.rk img { object-position: 28% 55%; }
+    .cap {
+      position: absolute; left: 0.75rem; bottom: 0.75rem;
+      background: rgba(11,18,32,0.82);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 1.08rem;
+      font-weight: 600;
+      padding: 0.42rem 0.75rem;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+    }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 0.55rem; }
+    .pill {
+      border: 1px solid var(--line);
+      background: var(--panel2);
+      color: var(--text);
+      border-radius: 99px;
+      padding: 0.42rem 0.95rem;
+      font-size: 1.12rem; font-weight: 600;
+    }
+    .pill.teal { border-color: var(--teal); color: var(--teal); }
+
+    .ok { color: var(--teal); font-weight: 600; }
+    .bad { color: var(--inf); font-weight: 600; }
+    .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+    table.proof {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      font-size: 1.16rem;
+    }
+    table.proof th {
+      text-align: left; color: var(--muted);
+      font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 700; padding: 0.42rem 0.7rem;
+    }
+    table.proof td {
+      padding: 0.55rem 0.7rem;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+      line-height: 1.35;
+    }
+    table.proof tr td:first-child { color: var(--text); font-weight: 600; width: 28%; }
+    table.proof tr td:nth-child(2) { color: var(--muted); }
+    table.proof tr td:last-child { color: var(--teal); font-weight: 600; white-space: nowrap; }
+
+    .flow { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; margin-top: auto; }
+    .box {
+      border-radius: 10px; padding: 0.5rem 0.8rem;
+      font-weight: 700; font-size: 1.12rem;
+    }
+
+    .cover {
+      justify-content: center;
+      max-width: 64rem;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .cover .fill { justify-content: center; gap: 1.25rem; }
+
+    .bar {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      height: 3.4rem;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.3rem;
+      background: linear-gradient(180deg, transparent, rgba(11,18,32,0.92));
+      z-index: 5;
+    }
+    .dots { display: flex; gap: 0.45rem; align-items: center; }
+    .dot {
+      width: 9px; height: 9px; border-radius: 99px;
+      background: var(--line); border: 0; cursor: pointer;
+    }
+    .dot.on { background: var(--teal); width: 22px; }
+    .nav { display: flex; gap: 0.5rem; align-items: center; }
+    .nav button, .fs {
+      background: var(--panel2); color: var(--text);
+      border: 1px solid var(--line); border-radius: 8px;
+      min-height: 2.5rem; min-width: 2.5rem;
+      padding: 0 0.8rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; font-size: 1.05rem;
+    }
+    .nav button:hover, .fs:hover { border-color: var(--teal); color: var(--teal); }
+    .count { color: var(--muted); font-size: 1rem; min-width: 4.6rem; text-align: center; }
+    .clock { color: var(--muted); font-size: 1rem; font-variant-numeric: tabular-nums; }
+
+    .help-keys { display: none; }
+
+    .end { text-align: left; }
+    .end .val { color: var(--teal); }
+
+    @media (max-height: 800px) {
+      html { font-size: clamp(18px, 1.4vw + 0.85vh, 24px); }
+      .slide { padding: 0.55rem 1.1rem 4.2rem; gap: 0.7rem; }
+      .head { gap: 0.18rem; }
+      .card { padding: 0.7rem 0.9rem; gap: 0.32rem; }
+      .eq { padding: 0.55rem 0.75rem; }
+      table.proof td { padding: 0.38rem 0.6rem; }
+      .bar { height: 3.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="help-keys">← → espaço · F tela cheia</div>
+  <div class="deck" id="deck">
+
+    <section class="slide on" data-t="0:40">
+      <div class="fill cover">
+        <div class="kicker">Projeto Integrador · Cálculo Numérico</div>
+        <h1>Painel SIR</h1>
+        <p class="lede">Um laboratório numérico para a epidemia clássica de Kermack–McKendrick. O motor de integração é escrito na mão. A interface só coleta parâmetros e filma o resultado.</p>
+        <div class="pills">
+          <span class="pill teal">engine.py · Euler + RK4</span>
+          <span class="pill">Streamlit</span>
+          <span class="pill">5 testes vs referência</span>
+          <span class="pill">~10 minutos</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-t="1:00">
+      <div class="head">
+        <div class="kicker">O problema</div>
+        <h2>Três números que a secretaria precisa</h2>
+        <p class="lede">Não existe fórmula fechada para S(t), I(t) e R(t). A órbita no plano S–I envolve Lambert W; a série no tempo exige um método de EDO.</p>
+      </div>
+      <div class="grid3">
+        <div class="card">
+          <p class="lbl">1 · Pico</p>
+          <p class="val" style="color:var(--inf)">máx I(t)</p>
+          <p>Quantas pessoas doentes ao mesmo tempo — o pior dia para o hospital.</p>
+        </div>
+        <div class="card">
+          <p class="lbl">2 · Dia do pico</p>
+          <p class="val">t*</p>
+          <p>Quando a onda estoura. Euler grosso atrasa esse instante; RK4 não.</p>
+        </div>
+        <div class="card">
+          <p class="lbl">3 · Ataque final</p>
+          <p class="val" style="color:var(--rec)">(N − S) / N</p>
+          <p>Que fração da cidade já passou pela doença quando a curva morre.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-t="1:10">
+      <div class="head">
+        <div class="kicker">O modelo</div>
+        <h2>Três filas, uma conservação</h2>
+        <p class="lede">S ainda podem pegar · I doentes agora · R já passaram. Ninguém some da lista: S + I + R = N.</p>
+      </div>
+      <div class="split">
+        <div class="card">
+          <h3>Kermack–McKendrick, 1927</h3>
+          <div class="eq">
+            dS/dt = <b>−β · S · I / N</b><br />
+            dI/dt = <b> β · S · I / N − γ · I</b><br />
+            dR/dt = <b> γ · I</b>
+          </div>
+          <div class="eq">
+            R0 = β / γ<br />
+            limiar de rebanho = 1 − 1/R0
+          </div>
+          <div class="flow">
+            <div class="box" style="background:#14352f;color:var(--teal)">S</div>
+            <span class="hint">gruda →</span>
+            <div class="box" style="background:#3a1d1a;color:var(--inf)">I</div>
+            <span class="hint">sara →</span>
+            <div class="box" style="background:#1a2744;color:var(--rec)">R</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>O que R0 decide</h3>
+          <ul>
+            <li><b style="color:var(--text)">R0 &gt; 1</b> — cada doente infecta mais de um colega. A turma vira dominó.</li>
+            <li><b style="color:var(--text)">R0 &lt; 1</b> — a onda murcha sozinha. O painel tem o preset Contida para mostrar isso ao vivo.</li>
+            <li>No cenário-base (gripe): β = 0,36 · γ = 0,20 · <b style="color:var(--teal)">R0 = 1,80</b> · precisa imunizar 44%.</li>
+            <li>O termo S·I torna o sistema não-linear: Euler de passo grosso distorce o pico.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-t="1:10">
+      <div class="head">
+        <div class="kicker">O motor</div>
+        <h2>Dois métodos, escritos na mão</h2>
+        <p class="lede">engine.py não chama scipy.integrate, odeint nem solve_ivp. NumPy entra só como array. A exponencial da fase inicial existe somente em tests.py.</p>
+      </div>
+      <div class="grid2" style="grid-template-columns: 0.88fr 1.12fr">
+        <div class="card">
+          <p class="lbl">Euler explícito · ordem 1</p>
+          <div class="eq">y<sub>n+1</sub> = y<sub>n</sub> + h · f(t<sub>n</sub>, y<sub>n</sub>)</div>
+          <p>Um passo só, barato. Com h grosso atrasa o pico e pode produzir compartimento negativo. No painel é o atalho que a gente compara.</p>
+        </div>
+        <div class="card">
+          <p class="lbl">Runge-Kutta 4 · ordem 4</p>
+          <div class="eq">
+            k1 = f(t, y)<br />
+            k2 = f(t + h/2, y + h/2 · k1)<br />
+            k3 = f(t + h/2, y + h/2 · k2)<br />
+            k4 = f(t + h, y + h · k3)<br />
+            y<sub>n+1</sub> = y + (h/6)·(k1 + 2k2 + 2k3 + k4)
+          </div>
+          <p>Quatro sondagens no intervalo. Motor padrão do laboratório e do Surto.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-t="1:00">
+      <div class="head">
+        <div class="kicker">Aplicação funcional</div>
+        <h2>O laboratório responde na hora</h2>
+        <p class="lede">Print real do app. Cenário gripe, N = 100 000, I(0) = 50, h = 0,25. Pico 11 817 no dia 44,5 · ataque 73,3% · R0 1,80.</p>
+      </div>
+      <div class="shot">
+        <img src="shots/lab-hero.png" alt="Painel SIR: KPIs, inspector do dia e curva S/I/R" />
+        <span class="cap">Simulação · print do sistema</span>
+      </div>
+    </section>
+
+    <section class="slide" data-t="1:10">
+      <div class="head">
+        <div class="kicker">Visualização · erro · convergência</div>
+        <h2>Onde o atalho Euler erra</h2>
+        <p class="lede">Três provas na mesma tela: o caminho S×I, a diferença |RK4 − Euler| ao longo do tempo, e o pico dos dois métodos.</p>
+      </div>
+      <div class="shot mid">
+        <img src="shots/lab-comparacao.png" alt="Plano de fase, gráfico de erro e comparação Euler vs RK4" />
+        <span class="cap">Pico Euler 11 937 · Pico RK4 11 817 · diferença 120</span>
+      </div>
+    </section>
+
+    <section class="slide" data-t="1:00">
+      <div class="head">
+        <div class="kicker">Como o sistema funciona</div>
+        <h2>A fórmula que o passo integra</h2>
+        <p class="lede">A aba Ajuda conta a história da escola e, em seguida, a EDO e o RK4 — o mesmo texto que o motor usa em engine.py.</p>
+      </div>
+      <div class="shot rk">
+        <img src="shots/ajuda-rk4.png" alt="Ajuda: EDOs do SIR e passo de Runge-Kutta 4" />
+        <span class="cap">Ajuda · SIR + RK4, sem SciPy</span>
+      </div>
+    </section>
+
+    <section class="slide" data-t="0:50">
+      <div class="head">
+        <div class="kicker">Além do laboratório</div>
+        <h2>Surto: o mesmo motor em oito capitais</h2>
+        <p class="lede">Cada cidade é um SIR. Aviões acoplam os estados. DNA compra sintomas; o governo e a cura puxam o outro lado. PDF do log incluso.</p>
+      </div>
+      <div class="shot">
+        <img src="shots/surto.png" alt="Modo Surto com mapa do Brasil e tabela das capitais" />
+        <span class="cap">Surto · 8 SIRs acoplados por viagem</span>
+      </div>
+    </section>
+
+    <section class="slide" data-t="1:10">
+      <div class="head">
+        <div class="kicker">Validação</div>
+        <h2>Cinco testes contra referência</h2>
+        <p class="lede">python tests.py — os cinco passaram. A atividade pedia no mínimo três.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <p class="lbl">Caso 1 · conservação</p>
+          <p>S+I+R = N em 640 passos. Drift máximo <span class="ok mono">1,02e-10</span>.</p>
+        </div>
+        <div class="card">
+          <p class="lbl">Caso 2 · exponencial</p>
+          <p>I(5) numérico 27,1815 vs analítico 27,1823. Erro relativo <span class="ok">0,003%</span>.</p>
+        </div>
+        <div class="card">
+          <p class="lbl">Caso 3 · R0 &lt; 1</p>
+          <p>R0 = 0,40. I só cai: pico = I(0) = 200, I final = 0.</p>
+        </div>
+        <div class="card">
+          <p class="lbl">Caso 4 · falhas</p>
+          <p>N = 0, γ = 0, h &lt; 0 e I0 &gt; N rejeitados com mensagem clara.</p>
+        </div>
+        <div class="card" style="grid-column:1 / -1">
+          <p class="lbl">Caso 5 · RK4 × Euler, h grosso</p>
+          <p>Referência RK4 h = 0,05: pico 6 022,6. Euler h = 0,50 erra <span class="bad">176</span>. RK4 h = 0,50 erra <span class="ok">3,6</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-t="0:50">
+      <div class="head">
+        <div class="kicker">A atividade</div>
+        <h2>Cada ponto pedido, e onde está</h2>
+        <p class="lede">O que o briefing exigia, mapeado para o arquivo e para o print que acabamos de ver.</p>
+      </div>
+      <div class="card">
+        <table class="proof">
+          <thead>
+            <tr><th>Requisito</th><th>Onde comprovar</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Aplicação funcional</td>
+              <td>app.py · Streamlit com Simulação, Surto e Ajuda.</td>
+              <td>sim</td>
+            </tr>
+            <tr>
+              <td>Visualização</td>
+              <td>Plotly: série S/I/R, plano de fase, erro local, mapa.</td>
+              <td>sim</td>
+            </tr>
+            <tr>
+              <td>Erro e convergência</td>
+              <td>|RK4 − Euler| no gráfico; pico Δ120; drift 1,02e-10.</td>
+              <td>sim</td>
+            </tr>
+            <tr>
+              <td>≥ 3 testes vs referência</td>
+              <td>tests.py: 5 casos vs referência analítica e RK4 fino.</td>
+              <td>sim</td>
+            </tr>
+            <tr>
+              <td>Engine própria</td>
+              <td>passo_euler e passo_rk4 em engine.py. Sem SciPy.</td>
+              <td>sim</td>
+            </tr>
+            <tr>
+              <td>README</td>
+              <td>README.md: problema, método, execução, validação.</td>
+              <td>sim</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="slide" data-t="0:40">
+      <div class="head">
+        <div class="kicker">Limites e fechamento</div>
+        <h2>Limites do recorte</h2>
+      </div>
+      <div class="split">
+        <div class="card">
+          <h3>Escopo honesto</h3>
+          <ul>
+            <li>População homogênea, β constante, sem idade nem quarentena extra no laboratório.</li>
+            <li>Passo fixo: o trecho íngreme do pico poderia ganhar passo adaptativo — fora do recorte.</li>
+            <li>Euler instável se h for grande demais. Por isso o painel mostra os dois métodos.</li>
+            <li>Ordem de grandeza para decisão, não previsão operacional.</li>
+          </ul>
+        </div>
+        <div class="card end">
+          <p class="lbl">Para rodar</p>
+          <p class="val">streamlit run app.py</p>
+          <p>python tests.py · http://localhost:8504</p>
+          <p style="margin-top:0.8rem">Obrigado. Perguntas.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bar">
+    <div class="clock" id="clock">0:00 / ~10 min</div>
+    <div class="dots" id="dots"></div>
+    <div class="nav">
+      <button type="button" id="prev" aria-label="Anterior">←</button>
+      <span class="count" id="count">1 / 11</span>
+      <button type="button" id="next" aria-label="Próximo">→</button>
+      <button type="button" class="fs" id="fs">F</button>
+    </div>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const dots = document.getElementById("dots");
+    const count = document.getElementById("count");
+    const clock = document.getElementById("clock");
+    let i = 0;
+    let t0 = null;
+
+    slides.forEach((_, n) => {
+      const b = document.createElement("button");
+      b.className = "dot" + (n === 0 ? " on" : "");
+      b.type = "button";
+      b.setAttribute("aria-label", "Slide " + (n + 1));
+      b.addEventListener("click", (e) => { e.stopPropagation(); go(n); });
+      dots.appendChild(b);
+    });
+
+    function fmt(s) {
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return m + ":" + String(r).padStart(2, "0");
+    }
+
+    function tick() {
+      if (t0 == null) return;
+      clock.textContent = fmt(Math.floor((Date.now() - t0) / 1000)) + " / ~10 min";
+    }
+    setInterval(tick, 1000);
+
+    function go(n) {
+      if (t0 == null) t0 = Date.now();
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach((s, k) => s.classList.toggle("on", k === i));
+      [...dots.children].forEach((d, k) => d.classList.toggle("on", k === i));
+      count.textContent = (i + 1) + " / " + slides.length;
+    }
+    window.go = go;
+
+    document.getElementById("prev").onclick = (e) => { e.stopPropagation(); go(i - 1); };
+    document.getElementById("next").onclick = (e) => { e.stopPropagation(); go(i + 1); };
+    document.getElementById("fs").onclick = (e) => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    };
+
+    document.addEventListener("keydown", (e) => {
+      if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); go(i + 1); }
+      if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); go(i - 1); }
+      if (e.key === "Home") go(0);
+      if (e.key === "End") go(slides.length - 1);
+      if (e.key === "f" || e.key === "F") {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+      }
+    });
+
+    document.querySelector(".deck").addEventListener("click", (e) => {
+      if (e.target.closest("button, a")) return;
+      const x = e.clientX / window.innerWidth;
+      go(x < 0.22 ? i - 1 : i + 1);
+    });
+  </script>
+</body>
+</html>
