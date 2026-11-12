@@ -163,3 +163,18 @@ Ajuste os nomes conforme o grupo.
 | Tabelas | Pandas |
 | Arrays / ops básicas | NumPy |
 | **Proibido na engine** | `scipy.integrate`, `odeint`, `solve_ivp` e equivalentes |
+
+---
+
+## 11. Publicar
+
+O Vercel **não** executa `streamlit run app.py`. Ele procura em `app.py` uma variável `app` / `application` / `handler` de Flask, FastAPI ou Django. Por isso o erro `PYTHON_ENTRYPOINT_NOT_FOUND`.
+
+Este repositório está configurado para o Vercel servir o painel **no navegador** (Stlite / Pyodide): mesma interface, sem servidor Python. A primeira abertura baixa o runtime e pode levar ~30 s.
+
+Na Vercel: Framework Preset **Other**, e deixe o `vercel.json` mandar no build. A apresentação fica em `/apresentacao`.
+
+Para o app com servidor Streamlit de verdade (mais rápido depois do load):
+
+1. https://share.streamlit.io
+2. New app → `Anhussi/projeto-calculo` → arquivo `app.py`

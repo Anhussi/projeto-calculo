@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Painel SIR</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.2/build/stlite.css" />
+  <style>
+    :root { --bg: #0B1220; --teal: #2EC4B6; --muted: #A8B6CC; --text: #E8EEF6; }
+    html, body, #root { margin: 0; height: 100%; background: var(--bg); }
+    #boot {
+      position: fixed; inset: 0; z-index: 20;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.85rem; padding: 2rem; text-align: center;
+      background: radial-gradient(1200px 560px at 0% 0%, #132033 0%, var(--bg) 52%);
+      color: var(--text);
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+    }
+    #boot .kicker {
+      color: var(--teal); font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; font-size: 0.78rem;
+    }
+    #boot h1 { font-size: 2rem; font-weight: 600; margin: 0; letter-spacing: -0.02em; }
+    #boot p { color: var(--muted); max-width: 28rem; line-height: 1.45; margin: 0; }
+    #boot.gone { opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+  </style>
+</head>
+<body>
+  <div id="boot">
+    <div class="kicker">Projeto Integrador · Cálculo Numérico</div>
+    <h1>Painel SIR</h1>
+    <p>Carregando o laboratório no navegador (Python via WebAssembly). Na primeira visita isso pode levar cerca de meio minuto.</p>
+  </div>
+  <div id="root"></div>
+  <script type="module">
+    import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.2/build/stlite.js";
+
+    const boot = document.getElementById("boot");
+    const hide = () => boot.classList.add("gone");
+    setTimeout(hide, 90000);
+
+    mount(
+      {
+        requirements: ["numpy", "pandas", "plotly", "fpdf2"],
+        entrypoint: "app.py",
+        files: {
+          "app.py": { url: "./app.py" },
+          "engine.py": { url: "./engine.py" },
+          "surto.py": { url: "./surto.py" },
+          "relatorio.py": { url: "./relatorio.py" },
+          ".streamlit/config.toml": { url: "./config.toml" },
+        },
+        streamlitConfig: {
+          "client.toolbarMode": "viewer",
+          "browser.gatherUsageStats": false,
+          "theme.base": "dark",
+          "theme.primaryColor": "#2EC4B6",
+          "theme.backgroundColor": "#0B1220",
+          "theme.secondaryBackgroundColor": "#121A2B",
+          "theme.textColor": "#E8EEF6",
+        },
+      },
+      document.getElementById("root"),
+    );
+
+    const watch = new MutationObserver(() => {
+      if (document.querySelector("iframe, [data-testid='stApp']")) {
+        hide();
+        watch.disconnect();
+      }
+    });
+    watch.observe(document.getElementById("root"), { childList: true, subtree: true });
+  </script>
+</body>
+</html>

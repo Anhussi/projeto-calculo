@@ -236,6 +236,9 @@
       table.proof td { padding: 0.38rem 0.6rem; }
       .bar { height: 3.1rem; }
     }
+
+    html.pdf-export .bar { display: none; }
+    html.pdf-export .slide { padding-bottom: 1.4rem; }
   </style>
 </head>
 <body>
@@ -568,6 +571,11 @@
       const x = e.clientX / window.innerWidth;
       go(x < 0.22 ? i - 1 : i + 1);
     });
+
+    const params = new URLSearchParams(location.search);
+    if (params.has("pdf")) document.documentElement.classList.add("pdf-export");
+    const start = parseInt(params.get("s") || location.hash.replace("#", ""), 10);
+    if (start >= 1) go(start - 1);
   </script>
 </body>
 </html>

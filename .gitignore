@@ -7,3 +7,4 @@ prints/
 _teste.pdf
 *.png
 !apresentacao/shots/*.png
+dist/
